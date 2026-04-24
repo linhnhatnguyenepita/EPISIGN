@@ -12,6 +12,7 @@ struct EPISIGNApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(\.font, AppFonts.dmSans(.body))
         }
     }
 }

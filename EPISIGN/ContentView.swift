@@ -8,14 +8,23 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var appState = AppState()
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        Group {
+            if appState.isAuthenticated {
+                switch appState.role {
+                case .student:
+                    StudentRootView()
+                case .teacher:
+                    TeacherRootView()
+                }
+            } else {
+                AuthView()
+            }
         }
-        .padding()
+        .environmentObject(appState)
+        .animation(.easeInOut(duration: 0.25), value: appState.isAuthenticated)
     }
 }
 
