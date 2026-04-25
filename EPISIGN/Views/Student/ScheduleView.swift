@@ -6,23 +6,21 @@ struct ScheduleView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 48) {
-                VStack(alignment: .leading, spacing: 24) {
-                    header
-                    ForEach(lectures) { lecture in
-                        Button {
-                            onOpenLecture(lecture)
-                        } label: {
-                            LectureCard(lecture: lecture)
-                        }
-                        .buttonStyle(.plain)
+            VStack(alignment: .leading, spacing: 24) {
+                header
+                ForEach(lectures) { lecture in
+                    Button {
+                        onOpenLecture(lecture)
+                    } label: {
+                        LectureCard(lecture: lecture)
                     }
+                    .buttonStyle(.plain)
                 }
             }
             .padding(.horizontal, 24)
-            .padding(.top, 8)
+            .padding(.top, 16)
         }
-        .background(Color.gray.opacity(0.1))
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private var header: some View {

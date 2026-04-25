@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import DotLottie
 
 struct AuthView: View {
     @EnvironmentObject private var appState: AppState
@@ -14,14 +15,24 @@ struct AuthView: View {
 
     @FocusState private var isEmailFocused: Bool
     @FocusState private var isPasswordFocused: Bool
+
+    @State private var animationInstance: DotLottieAnimation = DotLottieAnimation(
+        fileName: "password",
+        config: AnimationConfig(autoplay: true, loop: true)
+    )
+
     var body: some View {
         VStack{
+            DotLottieView(dotLottie: animationInstance)
+                .frame(width: 180, height: 180)
             Text("EPISIGN")
                 .font(AppFonts.bricolage(size: 32, weight: .bold))
                 .padding(.vertical, 4)
             Text("Login with your EPISIGN account or use Microsoft account")
                 .font(AppFonts.dmSans(size: 16))
                 .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
                 .padding(.bottom, 24)
                 
             VStack(spacing: 0){
@@ -88,6 +99,10 @@ struct AuthView: View {
         .padding(.horizontal, 24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.gray.opacity(0.05))
+        .onTapGesture {
+            isEmailFocused = false
+            isPasswordFocused = false
+        }
         
     }
 }
