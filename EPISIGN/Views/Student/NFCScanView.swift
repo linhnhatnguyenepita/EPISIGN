@@ -3,6 +3,7 @@ import SwiftUI
 struct NFCScanView: View {
     let lecture: Lecture
     var onScanned: () -> Void
+    var onQRScan: () -> Void
     var onDismiss: () -> Void
 
     @State private var pulse = false
@@ -27,7 +28,7 @@ struct NFCScanView: View {
     private var courseHeader: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("IN SESSION")
-                .font(.system(size: 11, weight: .bold))
+                .font(AppFonts.dmSans(size: 11, weight: .bold))
                 .tracking(0.55)
                 .foregroundStyle(AppColors.badgeBlueText)
                 .padding(.horizontal, 12)
@@ -35,16 +36,16 @@ struct NFCScanView: View {
                 .background(Capsule().fill(AppColors.badgeBlueBg))
 
             Text(lecture.title)
-                .font(.system(size: 24, weight: .bold))
+                .font(AppFonts.dmSans(size: 24, weight: .bold))
                 .foregroundStyle(AppColors.textPrimary)
                 .padding(.top, 4)
 
             HStack(spacing: 12) {
                 Image(systemName: "person.circle")
-                    .font(.system(size: 15))
+                    .font(AppFonts.dmSans(size: 15))
                     .foregroundStyle(AppColors.textSecondary)
                 Text(lecture.teacher)
-                    .font(.system(size: 18, weight: .medium))
+                    .font(AppFonts.dmSans(size: 18, weight: .medium))
                     .foregroundStyle(AppColors.textSecondary)
             }
         }
@@ -62,11 +63,11 @@ struct NFCScanView: View {
 
                 VStack(spacing: 16) {
                     Text("Ready to scan")
-                        .font(.system(size: 24, weight: .bold))
+                        .font(AppFonts.dmSans(size: 24, weight: .bold))
                         .tracking(-0.6)
                         .foregroundStyle(AppColors.textPrimary)
                     Text("Place your phone near the NFC tag\non the wall or at the lecturer's\npodium to verify your attendance.")
-                        .font(.system(size: 16))
+                        .font(AppFonts.dmSans(size: 16))
                         .foregroundStyle(AppColors.textSecondary)
                         .multilineTextAlignment(.center)
                         .lineSpacing(4)
@@ -80,10 +81,10 @@ struct NFCScanView: View {
                         .fill(AppColors.divider)
                         .frame(height: 1)
                     Button {
-                        onScanned()
+                        onQRScan()
                     } label: {
-                        Text("Can't scan? Enter code manually")
-                            .font(.system(size: 14, weight: .semibold))
+                        Text("Can't scan? Scan the QR Code here")
+                            .font(AppFonts.dmSans(size: 14, weight: .semibold))
                             .foregroundStyle(AppColors.textPrimary)
                             .padding(.vertical, 24)
                     }
@@ -113,12 +114,12 @@ struct NFCScanView: View {
                             .fill(AppColors.navyGradient)
                             .frame(width: 80, height: 80)
                         Image(systemName: "dot.radiowaves.left.and.right")
-                            .font(.system(size: 30, weight: .semibold))
+                            .font(AppFonts.dmSans(size: 30, weight: .semibold))
                             .foregroundStyle(Color.white)
                     }
                     VStack(spacing: 4) {
                         Image(systemName: "iphone")
-                            .font(.system(size: 28))
+                            .font(AppFonts.dmSans(size: 28))
                             .foregroundStyle(AppColors.navy)
                         Circle()
                             .fill(AppColors.navy)
@@ -139,5 +140,5 @@ struct NFCScanView: View {
 }
 
 #Preview {
-    NFCScanView(lecture: MockData.todaysLectures[0], onScanned: {}, onDismiss: {})
+    NFCScanView(lecture: MockData.todaysLectures[0], onScanned: {}, onQRScan: {}, onDismiss: {})
 }

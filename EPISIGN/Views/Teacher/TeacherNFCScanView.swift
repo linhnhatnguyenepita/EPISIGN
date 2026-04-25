@@ -1,5 +1,7 @@
 import SwiftUI
 import UserNotifications
+import CoreImage
+import CoreImage.CIFilterBuiltins
 
 struct TeacherNFCScanView: View {
     let lecture: Lecture
@@ -11,6 +13,8 @@ struct TeacherNFCScanView: View {
     @State private var sessionStarted = false
     @State private var secondsRemaining = 600
     @State private var sessionTimer: Timer?
+    @State private var showQRPopup = false
+    @State private var sessionQRToken: String = UUID().uuidString
 
     var body: some View {
         ScrollView {
@@ -19,9 +23,14 @@ struct TeacherNFCScanView: View {
                 scanCard
             }
             .padding(.horizontal, 24)
-            .padding(.bottom, 128)
+            .padding(.top, 24)
         }
         .background(AppColors.background)
+        .overlay {
+            if showQRPopup {
+                qrPopupOverlay
+            }
+        }
         .onAppear {
             withAnimation(.easeInOut(duration: 1.6).repeatForever(autoreverses: true)) {
                 pulse = true
@@ -36,7 +45,7 @@ struct TeacherNFCScanView: View {
     private var courseHeader: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(sessionStarted ? "IN SESSION" : "READY")
-                .font(.system(size: 11, weight: .bold))
+                .font(AppFonts.dmSans(size: 11, weight: .bold))
                 .tracking(0.55)
                 .foregroundStyle(AppColors.badgeBlueText)
                 .padding(.horizontal, 12)
@@ -44,16 +53,16 @@ struct TeacherNFCScanView: View {
                 .background(Capsule().fill(AppColors.badgeBlueBg))
 
             Text(lecture.title)
-                .font(.system(size: 24, weight: .bold))
+                .font(AppFonts.bricolage(size: 24, weight: .bold))
                 .foregroundStyle(AppColors.textPrimary)
                 .padding(.top, 4)
 
             HStack(spacing: 12) {
                 Image(systemName: "person.circle")
-                    .font(.system(size: 15))
+                    .font(AppFonts.dmSans(size: 15))
                     .foregroundStyle(AppColors.textSecondary)
                 Text(lecture.teacher)
-                    .font(.system(size: 18, weight: .medium))
+                    .font(AppFonts.dmSans(size: 18, weight: .medium))
                     .foregroundStyle(AppColors.textSecondary)
             }
         }
@@ -71,17 +80,17 @@ struct TeacherNFCScanView: View {
                     .padding(.horizontal, 24)
 
                 nfcWriteIcon
-                    .padding(.vertical, 24)
+                    .padding(.vertical, 8)
 
                 VStack(spacing: 16) {
                     Text(sessionStarted ? "Session Active" : "Write Session ID")
-                        .font(.system(size: 24, weight: .bold))
+                        .font(AppFonts.dmSans(size: 24, weight: .bold))
                         .tracking(-0.6)
                         .foregroundStyle(AppColors.textPrimary)
                     Text(sessionStarted
                          ? "The NFC tag is active.\nStudents can check in until the session expires."
                          : "Tap the NFC tag in your classroom\nto write the session ID and start\nthe 10-minute check-in window.")
-                        .font(.system(size: 16))
+                        .font(AppFonts.dmSans(size: 16))
                         .foregroundStyle(AppColors.textSecondary)
                         .multilineTextAlignment(.center)
                         .lineSpacing(4)
@@ -92,6 +101,30 @@ struct TeacherNFCScanView: View {
                 Spacer(minLength: 16)
 
                 VStack(spacing: 0) {
+                    if sessionStarted {
+                        Button {
+                            showQRPopup = true
+                        } label: {
+                            HStack(spacing: 10) {
+                                Image(systemName: "qrcode")
+                                    .font(AppFonts.dmSans(size: 16, weight: .semibold))
+                                Text("Show QR Code")
+                                    .font(AppFonts.dmSans(size: 16, weight: .semibold))
+                            }
+                            .foregroundStyle(Color.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(AppColors.navyGradient)
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal, 24)
+                        .padding(.bottom, 16)
+                        .transition(.opacity.combined(with: .move(edge: .bottom)))
+                    }
+
                     Rectangle()
                         .fill(AppColors.divider)
                         .frame(height: 1)
@@ -100,13 +133,14 @@ struct TeacherNFCScanView: View {
                         onDismiss()
                     } label: {
                         Text("Cancel session")
-                            .font(.system(size: 14, weight: .semibold))
+                            .font(AppFonts.dmSans(size: 14, weight: .semibold))
                             .foregroundStyle(Color.red.opacity(0.7))
                             .padding(.vertical, 24)
                     }
                     .buttonStyle(.plain)
                 }
                 .padding(.bottom, 24)
+                .animation(.easeInOut(duration: 0.2), value: sessionStarted)
             }
         }
     }
@@ -120,13 +154,13 @@ struct TeacherNFCScanView: View {
                           : AppColors.textTertiary)
                     .frame(width: 7, height: 7)
                 Text(sessionStarted ? "SESSION ACTIVE" : "TAP NFC TO START")
-                    .font(.system(size: 11, weight: .bold))
+                    .font(AppFonts.dmSans(size: 11, weight: .bold))
                     .tracking(0.5)
                     .foregroundStyle(AppColors.textSecondary)
             }
             Spacer()
             Text(timeFormatted)
-                .font(.system(size: 22, weight: .bold, design: .monospaced))
+                .font(AppFonts.dmSans(size: 22, weight: .bold))
                 .foregroundStyle(
                     sessionStarted
                         ? (secondsRemaining > 60 ? AppColors.textHeading : Color.red)
@@ -172,13 +206,13 @@ struct TeacherNFCScanView: View {
                                   : AppColors.navyGradient)
                             .frame(width: 80, height: 80)
                         Image(systemName: sessionStarted ? "checkmark" : "pencil.and.list.clipboard")
-                            .font(.system(size: 30, weight: .semibold))
+                            .font(AppFonts.dmSans(size: 30, weight: .semibold))
                             .foregroundStyle(Color.white)
                             .animation(.spring(response: 0.3), value: sessionStarted)
                     }
                     VStack(spacing: 4) {
                         Image(systemName: "iphone.radiowaves.left.and.right")
-                            .font(.system(size: 28))
+                            .font(AppFonts.dmSans(size: 28))
                             .foregroundStyle(sessionStarted ? AppColors.accentGreen : AppColors.navy)
                         Circle()
                             .fill(sessionStarted ? AppColors.accentGreen : AppColors.navy)
@@ -194,6 +228,80 @@ struct TeacherNFCScanView: View {
             .disabled(sessionStarted)
         }
         .frame(width: 280, height: 280)
+    }
+
+    private var qrPopupOverlay: some View {
+        ZStack {
+            Color.black.opacity(0.5)
+                .ignoresSafeArea()
+                .onTapGesture { showQRPopup = false }
+
+            VStack(spacing: 24) {
+                VStack(spacing: 8) {
+                    Text("QR Code")
+                        .font(AppFonts.bricolage(size: 20, weight: .bold))
+                        .foregroundStyle(AppColors.textHeading)
+                    Text("One-time session code for \(lecture.title)")
+                        .font(AppFonts.dmSans(size: 13))
+                        .foregroundStyle(AppColors.textSecondary)
+                        .multilineTextAlignment(.center)
+                }
+
+                if let qrImage = generateQRImage(from: sessionQRToken) {
+                    Image(uiImage: qrImage)
+                        .interpolation(.none)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 220, height: 220)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                } else {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(AppColors.headerBg)
+                        .frame(width: 220, height: 220)
+                        .overlay {
+                            Image(systemName: "qrcode")
+                                .font(.system(size: 60))
+                                .foregroundStyle(AppColors.textTertiary)
+                        }
+                }
+
+                HStack(spacing: 8) {
+                    Image(systemName: "clock")
+                        .font(AppFonts.dmSans(size: 12))
+                        .foregroundStyle(AppColors.textSecondary)
+                    Text("Expires in \(timeFormatted)")
+                        .font(AppFonts.dmSans(size: 13, weight: .semibold))
+                        .foregroundStyle(AppColors.textSecondary)
+                        .contentTransition(.numericText())
+                        .animation(.default, value: secondsRemaining)
+                }
+
+                Text("Tap outside to dismiss")
+                    .font(AppFonts.dmSans(size: 12))
+                    .foregroundStyle(AppColors.textTertiary)
+            }
+            .padding(28)
+            .background(
+                RoundedRectangle(cornerRadius: 24)
+                    .fill(AppColors.surface)
+                    .shadow(color: Color.black.opacity(0.15), radius: 32, x: 0, y: 12)
+            )
+            .padding(.horizontal, 32)
+        }
+        .transition(.opacity)
+        .animation(.easeInOut(duration: 0.2), value: showQRPopup)
+    }
+
+    private func generateQRImage(from string: String) -> UIImage? {
+        let data = Data(string.utf8)
+        let filter = CIFilter.qrCodeGenerator()
+        filter.setValue(data, forKey: "inputMessage")
+        filter.setValue("M", forKey: "inputCorrectionLevel")
+        let transform = CGAffineTransform(scaleX: 10, y: 10)
+        guard let output = filter.outputImage?.transformed(by: transform) else { return nil }
+        let context = CIContext()
+        guard let cgImage = context.createCGImage(output, from: output.extent) else { return nil }
+        return UIImage(cgImage: cgImage)
     }
 
     private var timeFormatted: String {

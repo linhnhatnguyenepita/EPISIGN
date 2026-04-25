@@ -61,7 +61,7 @@ struct AuthView: View {
             .padding(.bottom, 24)
             Button { appState.isAuthenticated = true } label: {
                 Text("Login")
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(AppFonts.dmSans(size: 18, weight: .semibold))
                     .foregroundStyle(Color.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)
@@ -74,16 +74,16 @@ struct AuthView: View {
             Button {}
                  label: {
                 Text("Forgot your password?")
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(AppFonts.dmSans(size: 14, weight: .semibold))
                     .foregroundStyle(AppColors.textPrimary)
             }
                  .padding(.top, 12)
             Button {} label: {
                 HStack(spacing: 8) {
                     Image(systemName: "link")
-                        .font(.system(size: 16))
+                        .font(AppFonts.dmSans(size: 16))
                     Text("Sign in with Microsoft Account")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(AppFonts.dmSans(size: 14, weight: .semibold))
                 }
                 .foregroundStyle(Color(.label))
                 .frame(maxWidth: .infinity)

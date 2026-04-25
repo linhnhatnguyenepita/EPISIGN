@@ -26,11 +26,11 @@ struct ScheduleView: View {
     private var header: some View {
         HStack {
             Text("Today's Lectures")
-                .font(.system(size: 20, weight: .bold))
+                .font(AppFonts.bricolage(size: 20, weight: .bold))
                 .foregroundStyle(AppColors.textPrimary)
             Spacer()
             Text("\(lectures.count) Sessions")
-                .font(.system(size: 14, weight: .semibold))
+                .font(AppFonts.dmSans(size: 14, weight: .semibold))
                 .foregroundStyle(AppColors.textHeading)
         }
     }
@@ -43,22 +43,22 @@ struct LectureCard: View {
         VStack(alignment: .leading, spacing: 4) {
             statusBadge
             Text(lecture.title)
-                .font(.system(size: 20, weight: .bold))
+                .font(AppFonts.dmSans(size: 20, weight: .bold))
                 .foregroundStyle(AppColors.textHeading)
                 .multilineTextAlignment(.leading)
             Text(lecture.teacher)
-                .font(.system(size: 14, weight: .medium))
+                .font(AppFonts.dmSans(size: 14, weight: .medium))
                 .foregroundStyle(AppColors.textSecondary)
             HStack(spacing: 6) {
                 Image(systemName: "clock")
-                    .font(.system(size: 12))
+                    .font(AppFonts.dmSans(size: 12))
                     .foregroundStyle(AppColors.textSecondary)
                 Text(lecture.timeRange)
-                    .font(.system(size: 14))
+                    .font(AppFonts.dmSans(size: 14))
                     .foregroundStyle(AppColors.textSecondary)
             }
             Text(lecture.room)
-                .font(.system(size: 12, weight: .medium))
+                .font(AppFonts.dmSans(size: 12, weight: .medium))
                 .foregroundStyle(AppColors.textSecondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -86,18 +86,18 @@ struct LectureCard: View {
                     .fill(AppColors.accentGreen)
                     .frame(width: 6, height: 6)
                 Text("CHECK-IN OPEN")
-                    .font(.system(size: 10, weight: .bold))
+                    .font(AppFonts.dmSans(size: 10, weight: .bold))
                     .tracking(1)
                     .foregroundStyle(AppColors.accentGreen)
             }
         case .upcoming:
             Text("UPCOMING")
-                .font(.system(size: 10, weight: .bold))
+                .font(AppFonts.dmSans(size: 10, weight: .bold))
                 .tracking(1)
                 .foregroundStyle(AppColors.upcomingText)
         case .past:
             Text("COMPLETED")
-                .font(.system(size: 10, weight: .bold))
+                .font(AppFonts.dmSans(size: 10, weight: .bold))
                 .tracking(1)
                 .foregroundStyle(AppColors.textTertiary)
         }

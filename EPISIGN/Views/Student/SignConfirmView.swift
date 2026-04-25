@@ -75,17 +75,17 @@ struct SignConfirmView: View {
     private var instructional: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Complete Attendance")
-                .font(.system(size: 24, weight: .heavy))
+                .font(AppFonts.bricolage(size: 24, weight: .heavy))
                 .tracking(-0.75)
                 .foregroundStyle(AppColors.textHeading)
             (Text("Provide your signature to complete attendance for ")
                 .foregroundStyle(AppColors.textSecondary)
              + Text(lecture.title)
                 .foregroundStyle(AppColors.textHeading)
-                .font(.system(size: 14, weight: .semibold))
+                .font(AppFonts.dmSans(size: 14, weight: .semibold))
              + Text(".")
                 .foregroundStyle(AppColors.textSecondary))
-                .font(.system(size: 14))
+                .font(AppFonts.dmSans(size: 14))
                 .lineSpacing(4)
         }
     }
@@ -94,7 +94,7 @@ struct SignConfirmView: View {
         VStack(spacing: 0) {
             HStack {
                 Text("SIGNATURE PAD")
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(AppFonts.dmSans(size: 14, weight: .semibold))
                     .tracking(1.4)
                     .foregroundStyle(AppColors.textSecondary)
                 Spacer()
@@ -102,7 +102,7 @@ struct SignConfirmView: View {
                     strokes.removeAll()
                 } label: {
                     Text("Clear Pad")
-                        .font(.system(size: 12, weight: .bold))
+                        .font(AppFonts.dmSans(size: 12, weight: .bold))
                         .foregroundStyle(AppColors.textPrimary)
                 }
                 .buttonStyle(.plain)
@@ -128,7 +128,7 @@ struct SignConfirmView: View {
                 VStack(alignment: .leading) {
                     Spacer()
                     Text("X SIGN HERE")
-                        .font(.system(size: 10, weight: .bold))
+                        .font(AppFonts.dmSans(size: 10, weight: .bold))
                         .tracking(1)
                         .foregroundStyle(AppColors.textTertiary)
                         .padding(.leading, 48)
@@ -140,10 +140,10 @@ struct SignConfirmView: View {
 
             HStack(spacing: 12) {
                 Image(systemName: "lock.shield")
-                    .font(.system(size: 12))
+                    .font(AppFonts.dmSans(size: 12))
                     .foregroundStyle(AppColors.textSecondary)
                 Text("Your signature is encrypted and stored as proof of presence.")
-                    .font(.system(size: 12))
+                    .font(AppFonts.dmSans(size: 12))
                     .foregroundStyle(AppColors.textSecondary)
                 Spacer()
             }
@@ -168,10 +168,10 @@ struct SignConfirmView: View {
             } label: {
                 HStack(spacing: 12) {
                     Text("Submit Attendance")
-                        .font(.system(size: 18, weight: .bold))
+                        .font(AppFonts.dmSans(size: 18, weight: .bold))
                         .foregroundStyle(Color.white)
                     Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 20))
+                        .font(AppFonts.dmSans(size: 20))
                         .foregroundStyle(Color.white)
                 }
                 .frame(maxWidth: .infinity)
@@ -188,7 +188,7 @@ struct SignConfirmView: View {
 
             Button(action: onCancel) {
                 Text("Cancel and exit")
-                    .font(.system(size: 16, weight: .medium))
+                    .font(AppFonts.dmSans(size: 16, weight: .medium))
                     .foregroundStyle(AppColors.textSecondary)
                     .padding(.vertical, 8)
             }
@@ -203,15 +203,15 @@ struct SignConfirmView: View {
                     .fill(AppColors.avatarBg)
                     .frame(width: 46, height: 46)
                 Image(systemName: "party.popper.fill")
-                    .font(.system(size: 20))
+                    .font(AppFonts.dmSans(size: 20))
                     .foregroundStyle(AppColors.accentGreen)
             }
             VStack(alignment: .leading, spacing: 2) {
                 Text("Attendance Confirmed")
-                    .font(.system(size: 16, weight: .bold))
+                    .font(AppFonts.dmSans(size: 16, weight: .bold))
                     .foregroundStyle(AppColors.textHeading)
                 Text("Success! Your presence has been logged for today.")
-                    .font(.system(size: 14))
+                    .font(AppFonts.dmSans(size: 14))
                     .foregroundStyle(AppColors.textSecondary)
             }
             Spacer()

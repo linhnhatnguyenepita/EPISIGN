@@ -2,6 +2,7 @@ import SwiftUI
 
 enum StudentFlow: Hashable {
     case scan(Lecture)
+    case qrScan(Lecture)
     case sign(Lecture)
 }
 
@@ -46,9 +47,19 @@ struct StudentRootView: View {
             NFCScanView(
                 lecture: lecture,
                 onScanned: { path.append(.sign(lecture)) },
+                onQRScan: { path.append(.qrScan(lecture)) },
                 onDismiss: { path.removeAll() }
             )
             .background(Color.blue)
+            .safeAreaInset(edge: .top, spacing: 0) { TopAppBar() }
+            .toolbar(.hidden, for: .navigationBar)
+
+        case .qrScan(let lecture):
+            QRScanView(
+                lecture: lecture,
+                onScanned: { path.append(.sign(lecture)) },
+                onDismiss: { path.removeLast() }
+            )
             .safeAreaInset(edge: .top, spacing: 0) { TopAppBar() }
             .toolbar(.hidden, for: .navigationBar)
 

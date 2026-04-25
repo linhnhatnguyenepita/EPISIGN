@@ -7,14 +7,14 @@ struct TopAppBar: View {
         HStack {
             HStack(spacing: 12) {
                 Image(systemName: "graduationcap.fill")
-                    .font(.system(size: 18, weight: .bold))
+                    .font(AppFonts.dmSans(size: 18, weight: .bold))
                     .foregroundStyle(AppColors.navy)
                 VStack(alignment: .leading, spacing: 1) {
                     Text("EPISIGN")
-                        .font(.system(size: 18, weight: .black))
+                        .font(AppFonts.dmSans(size: 18, weight: .black))
                         .foregroundStyle(AppColors.textPrimary)
                     Text(appState.role.label)
-                        .font(.system(size: 11, weight: .semibold))
+                        .font(AppFonts.dmSans(size: 11, weight: .semibold))
                         .foregroundStyle(AppColors.textSecondary)
                 }
             }
@@ -57,7 +57,7 @@ struct TopAppBar: View {
                     .frame(width: 40, height: 40)
                     .overlay(Circle().stroke(AppColors.avatarRing, lineWidth: 2))
                 Image(systemName: appState.role.icon)
-                    .font(.system(size: 16))
+                    .font(AppFonts.dmSans(size: 16))
                     .foregroundStyle(AppColors.textSecondary)
             }
         }
