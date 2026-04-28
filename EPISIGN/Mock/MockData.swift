@@ -6,28 +6,31 @@ enum MockData {
             id: "1",
             title: "Probabilités et statistique",
             teacher: "Lorem ipsum",
-            startTime: "10:00 AM",
-            endTime: "11:30 AM",
+            startTime: "10:00",
+            endTime: "11:30",
             room: "Room 402B • Science Wing",
-            status: .checkInOpen
+            status: .checkInOpen,
+            group: "DEV2_1"
         ),
         Lecture(
             id: "2",
             title: "Advanced Macroeconomics",
             teacher: "Lorem ipsum",
-            startTime: "1:00 PM",
-            endTime: "2:30 PM",
+            startTime: "13:00",
+            endTime: "14:30",
             room: "Room 402B • Science Wing",
-            status: .upcoming
+            status: .upcoming,
+            group: "DEV2_1"
         ),
         Lecture(
             id: "3",
             title: "Data Structures",
             teacher: "Lorem ipsum",
-            startTime: "3:00 PM",
-            endTime: "4:30 PM",
+            startTime: "15:00",
+            endTime: "22:30",
             room: "Room 402B • Science Wing",
-            status: .upcoming
+            status: .past,
+            group: "DEV2_1"
         )
     ]
 }
