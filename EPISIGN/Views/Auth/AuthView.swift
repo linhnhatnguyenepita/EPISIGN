@@ -12,6 +12,7 @@ struct AuthView: View {
     @EnvironmentObject private var appState: AppState
     @State private var email: String = ""
     @State private var password: String = ""
+    @State private var isLoading: Bool = false
 
     @FocusState private var isEmailFocused: Bool
     @FocusState private var isPasswordFocused: Bool
@@ -70,20 +71,30 @@ struct AuthView: View {
 
             Button {
                 Task {
+                    isLoading = true
                     await appState.login(email: email, password: password)
+                    isLoading = false
                 }
             } label: {
-                Text("Login")
-                    .font(AppFonts.dmSans(size: 18, weight: .semibold))
-                    .foregroundStyle(Color.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-                    .background(
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(AppColors.navyGradient)
-                    )
+                Group {
+                    if isLoading {
+                        ProgressView()
+                            .tint(.white)
+                    } else {
+                        Text("Login")
+                            .font(AppFonts.dmSans(size: 18, weight: .semibold))
+                            .foregroundStyle(Color.white)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+                .background(
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(AppColors.navyGradient)
+                )
             }
             .buttonStyle(.plain)
+            .disabled(isLoading || email.isEmpty || password.isEmpty)
             Button {}
                  label: {
                 Text("Forgot your password?")
@@ -91,23 +102,6 @@ struct AuthView: View {
                     .foregroundStyle(AppColors.textPrimary)
             }
                  .padding(.top, 12)
-            Button {} label: {
-                HStack(spacing: 8) {
-                    Image(systemName: "link")
-                        .font(AppFonts.dmSans(size: 16))
-                    Text("Sign in with Microsoft Account")
-                        .font(AppFonts.dmSans(size: 14, weight: .semibold))
-                }
-                .foregroundStyle(Color(.label))
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 14)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(Color.gray.opacity(0.3), lineWidth: 2)
-                )
-            }
-            .buttonStyle(.plain)
-            .padding(.top, 16)
         }
         .padding(.horizontal, 24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)

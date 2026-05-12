@@ -167,5 +167,5 @@ struct NFCScanView: View {
 }
 
 #Preview {
-    NFCScanView(lecture: MockData.todaysLectures[0], onScanned: {}, onQRScan: {}, onDismiss: {})
+    NFCScanView(lecture: MockData.todaysLectures[0], onScanned: { _ in }, onQRScan: {}, onDismiss: {})
 }

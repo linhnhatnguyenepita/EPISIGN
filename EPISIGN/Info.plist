@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NFCReaderUsageDescription</key>
-	<string>EPISIGN uses NFC to read classroom attendance session tags.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>EPISIGN uses your camera to scan QR codes for attendance verification.</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict/>

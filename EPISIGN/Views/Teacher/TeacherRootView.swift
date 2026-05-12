@@ -18,9 +18,13 @@ struct TeacherRootView: View {
     var body: some View {
         NavigationStack(path: $path) {
             ZStack(alignment: .bottom) {
-                ScheduleView(lectures: lectures) { lecture in
+                ScheduleView(lectures: lectures, onOpenLecture: { lecture in
                     path.append(.scan(lecture))
-                }
+                }, onRefresh: {
+                    if let uid = appState.userId {
+                        await viewModel.fetchLectures(for: .teacher, userId: uid)
+                    }
+                })
 
                 ScanFloatingButton {
                     path.append(.scan(lectureForScan))

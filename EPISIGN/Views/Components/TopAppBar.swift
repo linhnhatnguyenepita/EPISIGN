@@ -33,22 +33,12 @@ struct TopAppBar: View {
         Menu {
             Section {
                 Button {
-                    appState.role = .student
-                } label: {
-                    Label("Student", systemImage: "graduationcap.fill")
-                }
-                Button {
-                    appState.role = .teacher
-                } label: {
-                    Label("Teacher", systemImage: "person.fill")
-                }
-                Button {
                     appState.isAuthenticated = false
                 } label: {
                     Label("Logout", systemImage: "xmark.circle.fill")
                 }
             } header: {
-                Text("Switch role")
+                Text("Logout")
             }
         } label: {
             ZStack {

@@ -3,6 +3,7 @@ import SwiftUI
 struct ScheduleView: View {
     let lectures: [Lecture]
     var onOpenLecture: (Lecture) -> Void
+    var onRefresh: (() async -> Void)? = nil
 
     var body: some View {
         ScrollView {
@@ -13,6 +14,9 @@ struct ScheduleView: View {
             .padding(.horizontal, 24)
             .padding(.top, 24)
             .padding(.bottom, 32)
+        }
+        .refreshable {
+            await onRefresh?()
         }
         .background(AppColors.background)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -207,5 +211,5 @@ struct LectureCard: View {
 }
 
 #Preview {
-    ScheduleView(lectures: MockData.todaysLectures, onOpenLecture: { _ in })
+    ScheduleView(lectures: MockData.todaysLectures, onOpenLecture: { _ in }, onRefresh: nil)
 }

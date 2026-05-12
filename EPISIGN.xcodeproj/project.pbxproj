@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		434AA3ED2FB3384500CC59C5 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 434AA3EC2FB3384500CC59C5 /* FirebaseAuth */; };
+		434AA3EF2FB3384500CC59C5 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 434AA3EE2FB3384500CC59C5 /* FirebaseFirestore */; };
+		434AA3F62FB33A8500CC59C5 /* FirebaseFunctions in Frameworks */ = {isa = PBXBuildFile; productRef = 434AA3F52FB33A8500CC59C5 /* FirebaseFunctions */; };
 		438628682F9C3C8E0012B09F /* DotLottie in Frameworks */ = {isa = PBXBuildFile; productRef = 438628672F9C3C8E0012B09F /* DotLottie */; };
 		4386286A2F9C3C8E0012B09F /* DotLottiePlayer in Frameworks */ = {isa = PBXBuildFile; productRef = 438628692F9C3C8E0012B09F /* DotLottiePlayer */; };
 /* End PBXBuildFile section */
@@ -42,6 +45,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				4386286A2F9C3C8E0012B09F /* DotLottiePlayer in Frameworks */,
+				434AA3EF2FB3384500CC59C5 /* FirebaseFirestore in Frameworks */,
+				434AA3F62FB33A8500CC59C5 /* FirebaseFunctions in Frameworks */,
+				434AA3ED2FB3384500CC59C5 /* FirebaseAuth in Frameworks */,
 				438628682F9C3C8E0012B09F /* DotLottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -49,10 +55,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		434AA3F42FB33A8500CC59C5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		43D0EAFC2F9B524800A57FBD = {
 			isa = PBXGroup;
 			children = (
 				43D0EB072F9B524800A57FBD /* EPISIGN */,
+				434AA3F42FB33A8500CC59C5 /* Frameworks */,
 				43D0EB062F9B524800A57FBD /* Products */,
 			);
 			sourceTree = "<group>";
@@ -87,6 +101,9 @@
 			packageProductDependencies = (
 				438628672F9C3C8E0012B09F /* DotLottie */,
 				438628692F9C3C8E0012B09F /* DotLottiePlayer */,
+				434AA3EC2FB3384500CC59C5 /* FirebaseAuth */,
+				434AA3EE2FB3384500CC59C5 /* FirebaseFirestore */,
+				434AA3F52FB33A8500CC59C5 /* FirebaseFunctions */,
 			);
 			productName = EPISIGN;
 			productReference = 43D0EB052F9B524800A57FBD /* EPISIGN.app */;
@@ -118,6 +135,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				438628662F9C3C8E0012B09F /* XCRemoteSwiftPackageReference "dotlottie-ios" */,
+				434AA3EB2FB3384500CC59C5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 43D0EB062F9B524800A57FBD /* Products */;
@@ -274,13 +292,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = EPISIGN/EPISIGN.entitlements;
+				CODE_SIGN_ENTITLEMENTS = EPISIGN/EPISIGNDebug.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3Q98NJF39G;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = EPISIGN/Info.plist;
+				INFOPLIST_KEY_NFCReaderUsageDescription = "EPISIGN uses NFC to read classroom attendance session tags.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "EPISIGN uses your camera to scan QR codes for attendance verification.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -291,8 +312,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = epita.EPISIGN;
+				PRODUCT_BUNDLE_IDENTIFIER = fr.epita.episign;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -309,12 +331,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = EPISIGN/EPISIGN.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3Q98NJF39G;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = EPISIGN/Info.plist;
+				INFOPLIST_KEY_NFCReaderUsageDescription = "EPISIGN uses NFC to read classroom attendance session tags.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "EPISIGN uses your camera to scan QR codes for attendance verification.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -325,8 +350,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = epita.EPISIGN;
+				PRODUCT_BUNDLE_IDENTIFIER = fr.epita.episign;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -361,6 +387,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		434AA3EB2FB3384500CC59C5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.13.0;
+			};
+		};
 		438628662F9C3C8E0012B09F /* XCRemoteSwiftPackageReference "dotlottie-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/LottieFiles/dotlottie-ios.git";
@@ -372,6 +406,21 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		434AA3EC2FB3384500CC59C5 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 434AA3EB2FB3384500CC59C5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		434AA3EE2FB3384500CC59C5 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 434AA3EB2FB3384500CC59C5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		434AA3F52FB33A8500CC59C5 /* FirebaseFunctions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 434AA3EB2FB3384500CC59C5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFunctions;
+		};
 		438628672F9C3C8E0012B09F /* DotLottie */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 438628662F9C3C8E0012B09F /* XCRemoteSwiftPackageReference "dotlottie-ios" */;

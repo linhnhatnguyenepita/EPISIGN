@@ -11,6 +11,7 @@ struct TeacherNFCScanView: View {
 
     @State private var pulse = false
     @State private var sessionStarted = false
+    @State private var isStarting = false
     @State private var secondsRemaining = 600
     @State private var sessionTimer: Timer?
     @State private var showQRPopup = false
@@ -190,10 +191,9 @@ struct TeacherNFCScanView: View {
             }
 
             Button {
-                guard !sessionStarted else { return }
-                sessionStarted = true
+                guard !sessionStarted, !isStarting else { return }
+                isStarting = true
                 startSession()
-                onNFCWrite()
             } label: {
                 VStack(spacing: 24) {
                     ZStack {
@@ -226,7 +226,7 @@ struct TeacherNFCScanView: View {
                 .shadow(color: AppColors.navy.opacity(0.08), radius: 48, x: 0, y: 24)
             }
             .buttonStyle(.plain)
-            .disabled(sessionStarted)
+            .disabled(sessionStarted || isStarting)
         }
         .frame(width: 280, height: 280)
     }
@@ -321,6 +321,9 @@ struct TeacherNFCScanView: View {
                     switch result {
                     case .success:
                         DispatchQueue.main.async {
+                            isStarting = false
+                            sessionStarted = true
+                            onNFCWrite()
                             secondsRemaining = 600
                             scheduleExpirationNotification()
                             sessionTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
@@ -334,14 +337,14 @@ struct TeacherNFCScanView: View {
                         }
                     case .failure(let error):
                         DispatchQueue.main.async {
-                            sessionStarted = false
+                            isStarting = false
                             print("NFC Write failed: \(error)")
                         }
                     }
                 }
             } catch {
                 DispatchQueue.main.async {
-                    sessionStarted = false
+                    isStarting = false
                     print("Failed to start session: \(error)")
                 }
             }

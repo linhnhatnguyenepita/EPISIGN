@@ -173,5 +173,5 @@ struct QRScanView: View {
 }
 
 #Preview {
-    QRScanView(lecture: MockData.todaysLectures[0], onScanned: {}, onDismiss: {})
+    QRScanView(lecture: MockData.todaysLectures[0], onScanned: { _ in }, onDismiss: {})
 }

@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import CoreNFC
 
 class NFCWriterService: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate {
@@ -8,7 +9,7 @@ class NFCWriterService: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
 
     private var session: NFCNDEFReaderSession?
     private var tokenToWrite: String = ""
-    private var completion: ((Result<Void, Error>) -> Void)?
+    private var completion: ((Result<String, Error>) -> Void)?
 
     enum NFCError: LocalizedError {
         case noTagFound
@@ -24,7 +25,11 @@ class NFCWriterService: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
         }
     }
 
-    func write(token: String, completion: @escaping (Result<Void, Error>) -> Void) {
+    func writeRandom(completion: @escaping (Result<String, Error>) -> Void) {
+        write(token: UUID().uuidString, completion: completion)
+    }
+
+    func write(token: String, completion: @escaping (Result<String, Error>) -> Void) {
         self.tokenToWrite = token
         self.completion = completion
         self.writeSuccess = false
@@ -37,11 +42,11 @@ class NFCWriterService: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
 
     func readerSession(_ session: NFCNDEFReaderSession, didInvalidateWithError error: Error) {
         let nsError = error as NSError
-        if nsError.code != 200 {
-            DispatchQueue.main.async {
-                self.writeError = error.localizedDescription
-                self.completion?(.failure(error))
-            }
+        guard nsError.code != 200 else { return }
+        DispatchQueue.main.async {
+            self.writeError = error.localizedDescription
+            self.completion?(.failure(error))
+            self.completion = nil
         }
     }
 
@@ -89,7 +94,7 @@ class NFCWriterService: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
                         session.invalidate()
                         DispatchQueue.main.async {
                             self.writeSuccess = true
-                            self.completion?(.success(()))
+                            self.completion?(.success(self.tokenToWrite))
                         }
                     }
                 }

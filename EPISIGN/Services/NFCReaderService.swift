@@ -114,12 +114,14 @@ final class NFCReaderService: NSObject, ObservableObject, NFCNDEFReaderSessionDe
               let statusByte = record.payload.first
         else { return nil }
 
+        let isUTF16 = (statusByte & 0x80) != 0
         let languageCodeLength = Int(statusByte & 0x3F)
         let textStartIndex = 1 + languageCodeLength
         guard record.payload.count > textStartIndex else { return nil }
 
         let textData = record.payload.dropFirst(textStartIndex)
-        return String(data: textData, encoding: .utf8)
+        let encoding: String.Encoding = isUTF16 ? .utf16 : .utf8
+        return String(data: textData, encoding: encoding)
             .flatMap(normalizedSessionID)
     }
 
