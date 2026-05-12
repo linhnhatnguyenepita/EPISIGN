@@ -6,7 +6,10 @@ struct NFCScanView: View {
     var onQRScan: () -> Void
     var onDismiss: () -> Void
 
+    @StateObject private var nfcReader = NFCReaderService()
     @State private var pulse = false
+    @State private var statusMessage = "Place your phone near the NFC tag\non the wall or at the lecturer's\npodium to verify your attendance."
+    @State private var readError: String?
 
     var body: some View {
         ScrollView {
@@ -62,15 +65,21 @@ struct NFCScanView: View {
                     .padding(.vertical, 24)
 
                 VStack(spacing: 16) {
-                    Text("Ready to scan")
+                    Text(nfcReader.isReading ? "Reading NFC" : "Ready to scan")
                         .font(AppFonts.dmSans(size: 24, weight: .bold))
                         .tracking(-0.6)
                         .foregroundStyle(AppColors.textPrimary)
-                    Text("Place your phone near the NFC tag\non the wall or at the lecturer's\npodium to verify your attendance.")
+                    Text(statusMessage)
                         .font(AppFonts.dmSans(size: 16))
                         .foregroundStyle(AppColors.textSecondary)
                         .multilineTextAlignment(.center)
                         .lineSpacing(4)
+                    if let readError {
+                        Text(readError)
+                            .font(AppFonts.dmSans(size: 13, weight: .semibold))
+                            .foregroundStyle(Color.red.opacity(0.75))
+                            .multilineTextAlignment(.center)
+                    }
                 }
                 .padding(.horizontal, 24)
 
@@ -106,16 +115,17 @@ struct NFCScanView: View {
             }
 
             Button {
-                onScanned()
+                readNFC()
             } label: {
                 VStack(spacing: 24) {
                     ZStack {
                         Circle()
                             .fill(AppColors.navyGradient)
                             .frame(width: 80, height: 80)
-                        Image(systemName: "dot.radiowaves.left.and.right")
+                        Image(systemName: nfcReader.isReading ? "wave.3.right" : "dot.radiowaves.left.and.right")
                             .font(AppFonts.dmSans(size: 30, weight: .semibold))
                             .foregroundStyle(Color.white)
+                            .symbolEffect(.pulse, options: .repeating, value: nfcReader.isReading)
                     }
                     VStack(spacing: 4) {
                         Image(systemName: "iphone")
@@ -134,8 +144,25 @@ struct NFCScanView: View {
                 .shadow(color: AppColors.navy.opacity(0.08), radius: 48, x: 0, y: 24)
             }
             .buttonStyle(.plain)
+            .disabled(nfcReader.isReading)
         }
         .frame(width: 280, height: 280)
+    }
+
+    private func readNFC() {
+        readError = nil
+        statusMessage = "Hold still while EPISIGN reads the NFC tag."
+
+        Task {
+            do {
+                let sessionID = try await nfcReader.readSessionID()
+                statusMessage = "Read session \(sessionID).\nPreparing attendance confirmation."
+                onScanned()
+            } catch {
+                readError = error.localizedDescription
+                statusMessage = "Place your phone near the NFC tag\non the wall or at the lecturer's\npodium to verify your attendance."
+            }
+        }
     }
 }
 
