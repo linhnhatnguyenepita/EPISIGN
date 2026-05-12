@@ -3,15 +3,16 @@ import SwiftUI
 enum StudentFlow: Hashable {
     case scan(Lecture)
     case qrScan(Lecture)
-    case sign(Lecture)
+    case sign(Lecture, String)
 }
 
 struct StudentRootView: View {
     @EnvironmentObject private var appState: AppState
     @State private var path: [StudentFlow] = []
 
-    private let lectures = MockData.todaysLectures
+    @StateObject private var viewModel = LectureListViewModel()
 
+    private var lectures: [Lecture] { viewModel.lectures }
     private var lectureForScan: Lecture {
         lectures.first(where: { $0.status == .checkInOpen }) ?? lectures[0]
     }
@@ -27,6 +28,11 @@ struct StudentRootView: View {
 
                 ScanFloatingButton {
                     path.append(.scan(lectureForScan))
+                }
+            }
+            .task {
+                if let uid = appState.userId {
+                    await viewModel.fetchLectures(for: .student, userId: uid)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -46,7 +52,7 @@ struct StudentRootView: View {
         case .scan(let lecture):
             NFCScanView(
                 lecture: lecture,
-                onScanned: { path.append(.sign(lecture)) },
+                onScanned: { sessionId in path.append(.sign(lecture, sessionId)) },
                 onQRScan: { path.append(.qrScan(lecture)) },
                 onDismiss: { path.removeAll() }
             )
@@ -57,15 +63,16 @@ struct StudentRootView: View {
         case .qrScan(let lecture):
             QRScanView(
                 lecture: lecture,
-                onScanned: { path.append(.sign(lecture)) },
+                onScanned: { sessionId in path.append(.sign(lecture, sessionId)) },
                 onDismiss: { path.removeLast() }
             )
             .safeAreaInset(edge: .top, spacing: 0) { TopAppBar() }
             .toolbar(.hidden, for: .navigationBar)
 
-        case .sign(let lecture):
+        case .sign(let lecture, let sessionId):
             SignConfirmView(
                 lecture: lecture,
+                sessionId: sessionId,
                 onSubmit: { path.removeAll() },
                 onCancel: { path.removeAll() }
             )

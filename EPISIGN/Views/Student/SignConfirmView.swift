@@ -42,11 +42,14 @@ struct SignaturePad: View {
 
 struct SignConfirmView: View {
     let lecture: Lecture
+    let sessionId: String
     var onSubmit: () -> Void
     var onCancel: () -> Void
 
     @State private var strokes: [SignatureStroke] = []
     @State private var showConfirmed = false
+    @State private var errorMessage: String? = nil
+    @State private var isSubmitting = false
 
     var body: some View {
         ScrollView {
@@ -67,6 +70,13 @@ struct SignConfirmView: View {
                     .padding(.top, 8)
                     .transition(.move(edge: .top).combined(with: .opacity))
                     .zIndex(1)
+            }
+            if let errorMessage = errorMessage {
+                Text(errorMessage)
+                    .font(AppFonts.dmSans(size: 14))
+                    .foregroundStyle(.red)
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 16)
             }
         }
         .animation(.spring(response: 0.4, dampingFraction: 0.8), value: showConfirmed)
@@ -161,18 +171,36 @@ struct SignConfirmView: View {
     private var submitActions: some View {
         VStack(spacing: 16) {
             Button {
-                withAnimation { showConfirmed = true }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                    onSubmit()
+                Task {
+                    isSubmitting = true
+                    errorMessage = nil
+                    do {
+                        let result = try await FirebaseFunctionsService.shared.checkin(sessionId: sessionId, lectureId: lecture.id)
+                        if result.success {
+                            withAnimation { showConfirmed = true }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                onSubmit()
+                            }
+                        } else {
+                            errorMessage = result.message
+                        }
+                    } catch {
+                        errorMessage = error.localizedDescription
+                    }
+                    isSubmitting = false
                 }
             } label: {
                 HStack(spacing: 12) {
-                    Text("Submit Attendance")
-                        .font(AppFonts.dmSans(size: 18, weight: .bold))
-                        .foregroundStyle(Color.white)
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(AppFonts.dmSans(size: 20))
-                        .foregroundStyle(Color.white)
+                    if isSubmitting {
+                        ProgressView().tint(.white)
+                    } else {
+                        Text("Submit Attendance")
+                            .font(AppFonts.dmSans(size: 18, weight: .bold))
+                            .foregroundStyle(Color.white)
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(AppFonts.dmSans(size: 20))
+                            .foregroundStyle(Color.white)
+                    }
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 20)
@@ -183,8 +211,8 @@ struct SignConfirmView: View {
                 .shadow(color: Color.black.opacity(0.1), radius: 15, x: 0, y: 10)
             }
             .buttonStyle(.plain)
-            .disabled(strokes.flatMap { $0.points }.isEmpty)
-            .opacity(strokes.flatMap { $0.points }.isEmpty ? 0.6 : 1.0)
+            .disabled(strokes.flatMap { $0.points }.isEmpty || isSubmitting)
+            .opacity(strokes.flatMap { $0.points }.isEmpty || isSubmitting ? 0.6 : 1.0)
 
             Button(action: onCancel) {
                 Text("Cancel and exit")
@@ -234,5 +262,5 @@ struct SignConfirmView: View {
 }
 
 #Preview {
-    SignConfirmView(lecture: MockData.todaysLectures[0], onSubmit: {}, onCancel: {})
+    SignConfirmView(lecture: MockData.todaysLectures[0], sessionId: "mock-session", onSubmit: {}, onCancel: {})
 }

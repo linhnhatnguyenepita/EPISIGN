@@ -2,7 +2,7 @@ import SwiftUI
 
 struct NFCScanView: View {
     let lecture: Lecture
-    var onScanned: () -> Void
+    var onScanned: (String) -> Void
     var onQRScan: () -> Void
     var onDismiss: () -> Void
 
@@ -157,7 +157,7 @@ struct NFCScanView: View {
             do {
                 let sessionID = try await nfcReader.readSessionID()
                 statusMessage = "Read session \(sessionID).\nPreparing attendance confirmation."
-                onScanned()
+                onScanned(sessionID)
             } catch {
                 readError = error.localizedDescription
                 statusMessage = "Place your phone near the NFC tag\non the wall or at the lecturer's\npodium to verify your attendance."

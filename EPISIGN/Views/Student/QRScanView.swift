@@ -64,7 +64,7 @@ struct QRCameraPreview: UIViewRepresentable {
 
 struct QRScanView: View {
     let lecture: Lecture
-    var onScanned: () -> Void
+    var onScanned: (String) -> Void
     var onDismiss: () -> Void
 
     @StateObject private var viewModel = QRScannerViewModel()
@@ -80,8 +80,8 @@ struct QRScanView: View {
         }
         .background(AppColors.background)
         .onReceive(viewModel.$scannedCode) { code in
-            guard code != nil else { return }
-            onScanned()
+            guard let code = code else { return }
+            onScanned(code)
         }
         .onDisappear {
             viewModel.stop()

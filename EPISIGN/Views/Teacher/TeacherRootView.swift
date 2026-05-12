@@ -8,8 +8,9 @@ struct TeacherRootView: View {
     @EnvironmentObject private var appState: AppState
     @State private var path: [TeacherFlow] = []
 
-    private let lectures = MockData.todaysLectures
+    @StateObject private var viewModel = LectureListViewModel()
 
+    private var lectures: [Lecture] { viewModel.lectures }
     private var lectureForScan: Lecture {
         lectures.first(where: { $0.status == .checkInOpen }) ?? lectures[0]
     }
@@ -23,6 +24,11 @@ struct TeacherRootView: View {
 
                 ScanFloatingButton {
                     path.append(.scan(lectureForScan))
+                }
+            }
+            .task {
+                if let uid = appState.userId {
+                    await viewModel.fetchLectures(for: .teacher, userId: uid)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

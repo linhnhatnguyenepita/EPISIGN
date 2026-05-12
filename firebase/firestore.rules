@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Helper functions ────────────────────────────────────────────────────
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isTeacher() {
+      return isAuthenticated() && request.auth.token.role == "teacher";
+    }
+
+    function isStudent() {
+      return isAuthenticated() && request.auth.token.role == "student";
+    }
+
+    function isOwner(uid) {
+      return isAuthenticated() && request.auth.uid == uid;
+    }
+
+    // ─── Users ───────────────────────────────────────────────────────────────
+    // Users can read their own profile; only Cloud Functions can write roles
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow write: if false; // Only Cloud Functions write here
+    }
+
+    // ─── Lectures ────────────────────────────────────────────────────────────
+    // Teachers can read their own lectures; students can read lectures they're enrolled in
+    // Writes only via Admin SDK / Firebase Console (course setup done externally)
+    match /lectures/{lectureId} {
+      allow read: if isTeacher() && resource.data.teacherId == request.auth.uid
+                  || isStudent() && request.auth.uid in resource.data.studentIds;
+      allow write: if false; // Managed via Admin SDK
+    }
+
+    // ─── Sessions ────────────────────────────────────────────────────────────
+    // Neither teachers nor students read/write sessions directly — Cloud Functions handle this
+    match /sessions/{sessionId} {
+      allow read, write: if false;
+    }
+
+    // ─── Presence ────────────────────────────────────────────────────────────
+    // Teachers can read presence for their lectures
+    // Students can read their own presence record
+    // Writes only via Cloud Functions (checkin function)
+    match /presence/{lectureId}/records/{studentId} {
+      allow read: if isStudent() && isOwner(studentId)
+                  || isTeacher();
+      allow write: if false; // Only Cloud Functions write here
+    }
+  }
+}

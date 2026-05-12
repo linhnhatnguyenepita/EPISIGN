@@ -65,3 +65,6 @@ AGENTS.md
 CLAUDE.md
 .claude
 .agents
+firebase/serviceAccountKey.json
+GoogleService-Info.plist
+EPISIGN/GoogleService-Info.plist

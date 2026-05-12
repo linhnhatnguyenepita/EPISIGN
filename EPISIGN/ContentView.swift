@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  EPISIGN
-//
-//  Created by Nhat Linh on 24/04/2026.
-//
-
 import SwiftUI
 
 struct ContentView: View {
@@ -12,7 +5,9 @@ struct ContentView: View {
 
     var body: some View {
         Group {
-            if appState.isAuthenticated {
+            if appState.isLoading {
+                SplashView()
+            } else if appState.isAuthenticated {
                 switch appState.role {
                 case .student:
                     StudentRootView()

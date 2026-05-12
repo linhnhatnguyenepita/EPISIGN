@@ -58,8 +58,21 @@ struct AuthView: View {
                 RoundedRectangle(cornerRadius: 16)
                     .fill(Color.white)
             )
-            .padding(.bottom, 24)
-            Button { appState.isAuthenticated = true } label: {
+            .padding(.bottom, 12)
+            
+            if let errorMessage = appState.errorMessage {
+                Text(errorMessage)
+                    .font(AppFonts.dmSans(size: 13, weight: .medium))
+                    .foregroundStyle(.red)
+                    .multilineTextAlignment(.center)
+                    .padding(.bottom, 12)
+            }
+
+            Button {
+                Task {
+                    await appState.login(email: email, password: password)
+                }
+            } label: {
                 Text("Login")
                     .font(AppFonts.dmSans(size: 18, weight: .semibold))
                     .foregroundStyle(Color.white)
