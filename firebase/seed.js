@@ -47,17 +47,51 @@ async function setRole(uid, role) {
   console.log(`✅ Role "${role}" set for uid: ${uid}`);
 }
 
-async function createSampleLecture(teacherId, studentId) {
-  const lectureRef = db.collection("lectures").doc();
-  await lectureRef.set({
-    title: "Algorithmique Avancée",
-    subject: "INF-301",
+async function createLectures(teacherId, studentId) {
+  // Delete existing lectures first
+  const existing = await db.collection("lectures").get();
+  const batch = db.batch();
+  existing.forEach(doc => batch.delete(doc.ref));
+  await batch.commit();
+
+  const now = new Date();
+  
+  // 1. Lecture en cours (CHECK-IN OPEN)
+  const lecture1 = db.collection("lectures").doc();
+  await lecture1.set({
+    title: "Probabilités et statistique",
+    subject: "DEV2_1",
+    room: "Amphi A",
     teacherId,
     studentIds: [studentId],
-    scheduledAt: admin.firestore.Timestamp.fromDate(new Date()),
+    scheduledAt: admin.firestore.Timestamp.fromDate(now),
   });
-  console.log(`✅ Sample lecture created: ${lectureRef.id}`);
-  return lectureRef.id;
+
+  // 2. Lecture à venir aujourd'hui (UPCOMING)
+  const lecture2 = db.collection("lectures").doc();
+  const laterToday = new Date(now.getTime() + 2 * 60 * 60 * 1000); // +2h
+  await lecture2.set({
+    title: "Intelligence Artificielle",
+    subject: "DEV2_1",
+    room: "Room 402B",
+    teacherId,
+    studentIds: [studentId],
+    scheduledAt: admin.firestore.Timestamp.fromDate(laterToday),
+  });
+
+  // 3. Lecture demain (UPCOMING)
+  const lecture3 = db.collection("lectures").doc();
+  const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000); // +24h
+  await lecture3.set({
+    title: "Architecture Réseaux",
+    subject: "DEV2_1",
+    room: "Cisco Lab",
+    teacherId,
+    studentIds: [studentId],
+    scheduledAt: admin.firestore.Timestamp.fromDate(tomorrow),
+  });
+
+  console.log("✅ Lectures initialized: 1 Open, 2 Upcoming");
 }
 
 async function main() {
@@ -69,13 +103,12 @@ async function main() {
   await setRole(teacher.uid, "teacher");
   await setRole(student.uid, "student");
 
-  const lectureId = await createSampleLecture(teacher.uid, student.uid);
+  await createLectures(teacher.uid, student.uid);
 
   console.log("\n───────────────────────────────────────");
   console.log("📋 Test credentials:");
   console.log(`   Teacher  → ${TEACHER.email} / ${TEACHER.password}`);
   console.log(`   Student  → ${STUDENT.email} / ${STUDENT.password}`);
-  console.log(`   Lecture  → ${lectureId}`);
   console.log("───────────────────────────────────────\n");
 
   process.exit(0);
