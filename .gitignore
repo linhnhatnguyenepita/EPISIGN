@@ -68,3 +68,7 @@ CLAUDE.md
 firebase/serviceAccountKey.json
 GoogleService-Info.plist
 EPISIGN/GoogleService-Info.plist
+
+# Website
+website/node_modules/
+website/dist/

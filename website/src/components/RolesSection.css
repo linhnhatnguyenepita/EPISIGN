@@ -1,0 +1,188 @@
+.roles-section {
+  padding: 100px 0;
+  background-color: var(--bg-color);
+}
+
+.role-block {
+  display: flex;
+  align-items: center;
+  gap: 80px;
+  margin-bottom: 120px;
+}
+
+.role-block:last-child {
+  margin-bottom: 0;
+}
+
+.role-content {
+  flex: 1;
+}
+
+.role-pill {
+  margin-bottom: 20px;
+}
+
+.role-content h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.role-content p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+}
+
+.role-list {
+  list-style: none;
+  padding: 0;
+}
+
+.role-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+.list-icon {
+  width: 24px;
+  height: 24px;
+  background-color: var(--accent-green-light);
+  color: var(--accent-green);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.role-visual {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+/* Teacher Modal Mockup */
+.modal-mockup {
+  background: rgba(0, 0, 0, 0.4);
+  width: 100%;
+  max-width: 400px;
+  height: 400px;
+  border-radius: 30px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-content {
+  background: white;
+  width: 100%;
+  border-radius: 30px 30px 0 0;
+  padding: 30px 24px;
+  text-align: center;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 30px;
+  height: 30px;
+  background: var(--bg-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  font-weight: bold;
+}
+
+.modal-content h3 {
+  font-size: 1.4rem;
+  margin-bottom: 12px;
+}
+
+.modal-content p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: 30px;
+}
+
+.modal-icon-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.modal-icon-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 4px solid var(--accent-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-blue);
+}
+
+.btn-cancel {
+  background-color: var(--accent-blue);
+  color: white;
+  width: 100%;
+}
+
+/* Student Card Mockup */
+.student-card-mockup {
+  width: 100%;
+  max-width: 400px;
+}
+
+.student-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.time-left {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.student-card-mockup h4 {
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+}
+
+.student-card-mockup p {
+  color: var(--text-secondary);
+  margin-bottom: 30px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+@media (max-width: 992px) {
+  .role-block {
+    flex-direction: column;
+    text-align: center;
+    gap: 40px;
+  }
+  
+  .role-reverse {
+    flex-direction: column-reverse;
+  }
+  
+  .role-list li {
+    justify-content: center;
+  }
+}
