@@ -15,6 +15,7 @@ struct Lecture: Identifiable, Hashable {
     let room: String
     let status: LectureStatus
     let group: String
+    let hasCheckedIn: Bool
 
     var timeRange: String { "\(startTime) - \(endTime)" }
 }

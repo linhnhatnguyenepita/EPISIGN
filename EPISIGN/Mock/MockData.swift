@@ -10,7 +10,8 @@ enum MockData {
             endTime: "11:30",
             room: "Room 402B • Science Wing",
             status: .checkInOpen,
-            group: "DEV2_1"
+            group: "DEV2_1",
+            hasCheckedIn: false
         ),
         Lecture(
             id: "2",
@@ -20,7 +21,8 @@ enum MockData {
             endTime: "14:30",
             room: "Room 402B • Science Wing",
             status: .upcoming,
-            group: "DEV2_1"
+            group: "DEV2_1",
+            hasCheckedIn: false
         ),
         Lecture(
             id: "3",
@@ -30,7 +32,8 @@ enum MockData {
             endTime: "22:30",
             room: "Room 402B • Science Wing",
             status: .past,
-            group: "DEV2_1"
+            group: "DEV2_1",
+            hasCheckedIn: true
         )
     ]
 }

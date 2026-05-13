@@ -77,7 +77,12 @@ struct StudentRootView: View {
             SignConfirmView(
                 lecture: lecture,
                 sessionId: sessionId,
-                onSubmit: { path.removeAll() },
+                onSubmit: {
+                    path.removeAll()
+                    if let uid = appState.userId {
+                        Task { await viewModel.fetchLectures(for: .student, userId: uid) }
+                    }
+                },
                 onCancel: { path.removeAll() }
             )
             .background(Color.blue)

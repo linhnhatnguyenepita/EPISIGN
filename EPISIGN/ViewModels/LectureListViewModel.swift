@@ -59,6 +59,17 @@ class LectureListViewModel: ObservableObject {
                     status = .upcoming
                 }
                 
+                var hasCheckedIn = false
+                if role == .student {
+                    let presenceDoc = try? await db
+                        .collection("presence")
+                        .document(doc.documentID)
+                        .collection("records")
+                        .document(userId)
+                        .getDocument()
+                    hasCheckedIn = presenceDoc?.exists ?? false
+                }
+
                 fetchedLectures.append(Lecture(
                     id: doc.documentID,
                     title: title,
@@ -67,7 +78,8 @@ class LectureListViewModel: ObservableObject {
                     endTime: endTime,
                     room: room,
                     status: status,
-                    group: group
+                    group: group,
+                    hasCheckedIn: hasCheckedIn
                 ))
             }
             

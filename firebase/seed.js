@@ -38,10 +38,10 @@ async function createOrGetUser(config) {
   }
 }
 
-async function setRole(uid, role) {
+async function setRole(uid, role, displayName) {
   await auth.setCustomUserClaims(uid, { role });
   await db.collection("users").doc(uid).set(
-    { role, updatedAt: admin.firestore.FieldValue.serverTimestamp() },
+    { role, displayName, updatedAt: admin.firestore.FieldValue.serverTimestamp() },
     { merge: true }
   );
   console.log(`✅ Role "${role}" set for uid: ${uid}`);
@@ -100,8 +100,8 @@ async function main() {
   const teacher = await createOrGetUser(TEACHER);
   const student = await createOrGetUser(STUDENT);
 
-  await setRole(teacher.uid, "teacher");
-  await setRole(student.uid, "student");
+  await setRole(teacher.uid, "teacher", TEACHER.displayName);
+  await setRole(student.uid, "student", STUDENT.displayName);
 
   await createLectures(teacher.uid, student.uid);
 

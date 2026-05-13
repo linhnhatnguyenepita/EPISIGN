@@ -131,14 +131,19 @@ struct LectureCard: View {
 
     @ViewBuilder
     private var statusTab: some View {
-        let (bg, content): (Color, AnyView) = switch lecture.status {
-        case .checkInOpen:
-            (AppColors.accentGreen, AnyView(checkInOpenLabel))
-        case .upcoming:
-            (AppColors.navy, AnyView(upcomingLabel))
-        case .past:
-            (Color(hex: 0x6B7280), AnyView(completedLabel))
-        }
+        let (bg, content): (Color, AnyView) = {
+            if lecture.hasCheckedIn {
+                return (AppColors.accentGreen, AnyView(checkedInLabel))
+            }
+            switch lecture.status {
+            case .checkInOpen:
+                return (AppColors.accentGreen, AnyView(checkInOpenLabel))
+            case .upcoming:
+                return (AppColors.navy, AnyView(upcomingLabel))
+            case .past:
+                return (Color(hex: 0x6B7280), AnyView(completedLabel))
+            }
+        }()
 
         content
             .padding(.horizontal, 10)
@@ -152,6 +157,18 @@ struct LectureCard: View {
                     topTrailingRadius: 12
                 )
             )
+    }
+
+    private var checkedInLabel: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "checkmark.circle.fill")
+                .font(AppFonts.dmSans(size: 10, weight: .bold))
+                .foregroundStyle(.white)
+            Text("CHECKED IN")
+                .font(AppFonts.dmSans(size: 10, weight: .bold))
+                .tracking(1)
+                .foregroundStyle(.white)
+        }
     }
 
     private var checkInOpenLabel: some View {
