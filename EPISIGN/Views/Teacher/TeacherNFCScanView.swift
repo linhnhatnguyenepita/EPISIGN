@@ -2,6 +2,7 @@ import SwiftUI
 import UserNotifications
 import CoreImage
 import CoreImage.CIFilterBuiltins
+import ActivityKit
 
 struct TeacherNFCScanView: View {
     let lecture: Lecture
@@ -17,6 +18,7 @@ struct TeacherNFCScanView: View {
     @State private var showQRPopup = false
     @State private var sessionQRToken: String = UUID().uuidString
     @StateObject private var nfcWriter = NFCWriterService()
+    @State private var liveActivity: Activity<SessionAttributes>?
 
     var body: some View {
         ScrollView {
@@ -325,12 +327,15 @@ struct TeacherNFCScanView: View {
                             sessionStarted = true
                             onNFCWrite()
                             secondsRemaining = 600
+                            let endDate = Date().addingTimeInterval(600)
+                            startLiveActivity(endDate: endDate)
                             scheduleExpirationNotification()
                             sessionTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
                                 if secondsRemaining > 0 {
                                     secondsRemaining -= 1
                                 } else {
                                     sessionTimer?.invalidate()
+                                    endLiveActivity()
                                     onSessionExpired()
                                 }
                             }
@@ -353,9 +358,38 @@ struct TeacherNFCScanView: View {
 
     private func cancelSession() {
         sessionTimer?.invalidate()
+        endLiveActivity()
         UNUserNotificationCenter.current().removePendingNotificationRequests(
             withIdentifiers: ["episign-session-\(lecture.id)"]
         )
+    }
+
+    private func startLiveActivity(endDate: Date) {
+        guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
+        let attributes = SessionAttributes(lectureTitle: lecture.title, lectureId: lecture.id)
+        let state = SessionAttributes.ContentState(endDate: endDate)
+        do {
+            liveActivity = try Activity.request(
+                attributes: attributes,
+                content: .init(state: state, staleDate: endDate),
+                pushType: nil
+            )
+        } catch {
+            print("Failed to start Live Activity: \(error)")
+        }
+    }
+
+    private func endLiveActivity() {
+        let activity = liveActivity
+        liveActivity = nil
+        Task {
+            if let activity {
+                await activity.end(nil, dismissalPolicy: .immediate)
+            }
+            for other in Activity<SessionAttributes>.activities {
+                await other.end(nil, dismissalPolicy: .immediate)
+            }
+        }
     }
 
     private func requestNotificationPermission() {

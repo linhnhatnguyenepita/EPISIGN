@@ -46,7 +46,8 @@ class LectureListViewModel: ObservableObject {
                 formatter.dateFormat = "HH:mm"
                 let startTime = formatter.string(from: scheduledAt)
                 
-                let endTimeDate = scheduledAt.addingTimeInterval(3600 * 1.5) // 1.5 hours
+                let durationMinutes = data["durationMinutes"] as? Int ?? 90
+                let endTimeDate = scheduledAt.addingTimeInterval(TimeInterval(durationMinutes * 60))
                 let endTime = formatter.string(from: endTimeDate)
                 
                 let now = Date()

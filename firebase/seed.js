@@ -79,7 +79,8 @@ async function createLectures(teacherIds, studentId) {
       subject: "DEV2_1",
       room: "Amphi A",
       teacherIndex: 0,
-      scheduledAt: atHourToday(9, 0),
+      scheduledAt: atHourToday(10, 40),
+      durationMinutes: 120,
     },
     {
       title: "Intelligence Artificielle",
@@ -87,6 +88,7 @@ async function createLectures(teacherIds, studentId) {
       room: "Room 402B",
       teacherIndex: 1,
       scheduledAt: atHourToday(13, 0),
+      durationMinutes: 120,
     },
     {
       title: "Architecture Réseaux",
@@ -94,6 +96,7 @@ async function createLectures(teacherIds, studentId) {
       room: "Cisco Lab",
       teacherIndex: 2,
       scheduledAt: atHourToday(16, 0),
+      durationMinutes: 90,
     },
   ];
 
@@ -107,6 +110,7 @@ async function createLectures(teacherIds, studentId) {
       teacherName: TEACHERS[lecture.teacherIndex].displayName,
       studentIds: [studentId],
       scheduledAt: admin.firestore.Timestamp.fromDate(lecture.scheduledAt),
+      durationMinutes: lecture.durationMinutes,
     });
   }
 

@@ -34,5 +34,7 @@
 		<string>DMSans-Black.ttf</string>
 		<string>DMSans-BlackItalic.ttf</string>
 	</array>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 </dict>
 </plist>
