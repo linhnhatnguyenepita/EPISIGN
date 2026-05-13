@@ -21,11 +21,23 @@ struct NFCScanView: View {
             .padding(.bottom, 128)
         }
         .background(AppColors.background)
+        .simultaneousGesture(swipeBackGesture)
         .onAppear {
             withAnimation(.easeInOut(duration: 1.6).repeatForever(autoreverses: true)) {
                 pulse = true
             }
         }
+    }
+
+    private var swipeBackGesture: some Gesture {
+        DragGesture(minimumDistance: 20)
+            .onEnded { value in
+                let horizontal = value.translation.width
+                let vertical = abs(value.translation.height)
+                if horizontal > 80, horizontal > vertical * 1.5 {
+                    onDismiss()
+                }
+            }
     }
 
     private var courseHeader: some View {

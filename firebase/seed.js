@@ -8,12 +8,26 @@ admin.initializeApp({
 const auth = admin.auth();
 const db = admin.firestore();
 
-const TEACHER = {
-  email: "prof@episign.test",
-  password: "EpiSign2024!",
-  displayName: "Dr. Martin",
-  role: "teacher",
-};
+const TEACHERS = [
+  {
+    email: "prof.martin@episign.test",
+    password: "EpiSign2024!",
+    displayName: "Dr. Martin",
+    role: "teacher",
+  },
+  {
+    email: "prof.dubois@episign.test",
+    password: "EpiSign2024!",
+    displayName: "Pr. Dubois",
+    role: "teacher",
+  },
+  {
+    email: "prof.laurent@episign.test",
+    password: "EpiSign2024!",
+    displayName: "Dr. Laurent",
+    role: "teacher",
+  },
+];
 
 const STUDENT = {
   email: "etudiant@episign.test",
@@ -47,67 +61,77 @@ async function setRole(uid, role, displayName) {
   console.log(`✅ Role "${role}" set for uid: ${uid}`);
 }
 
-async function createLectures(teacherId, studentId) {
-  // Delete existing lectures first
+function atHourToday(hour, minute = 0) {
+  const d = new Date();
+  d.setHours(hour, minute, 0, 0);
+  return d;
+}
+
+async function createLectures(teacherIds, studentId) {
   const existing = await db.collection("lectures").get();
   const batch = db.batch();
   existing.forEach(doc => batch.delete(doc.ref));
   await batch.commit();
 
-  const now = new Date();
-  
-  // 1. Lecture en cours (CHECK-IN OPEN)
-  const lecture1 = db.collection("lectures").doc();
-  await lecture1.set({
-    title: "Probabilités et statistique",
-    subject: "DEV2_1",
-    room: "Amphi A",
-    teacherId,
-    studentIds: [studentId],
-    scheduledAt: admin.firestore.Timestamp.fromDate(now),
-  });
+  const lectures = [
+    {
+      title: "Probabilités et statistique",
+      subject: "DEV2_1",
+      room: "Amphi A",
+      teacherId: teacherIds[0],
+      scheduledAt: atHourToday(9, 0),
+    },
+    {
+      title: "Intelligence Artificielle",
+      subject: "DEV2_1",
+      room: "Room 402B",
+      teacherId: teacherIds[1],
+      scheduledAt: atHourToday(13, 0),
+    },
+    {
+      title: "Architecture Réseaux",
+      subject: "DEV2_1",
+      room: "Cisco Lab",
+      teacherId: teacherIds[2],
+      scheduledAt: atHourToday(16, 0),
+    },
+  ];
 
-  // 2. Lecture à venir aujourd'hui (UPCOMING)
-  const lecture2 = db.collection("lectures").doc();
-  const laterToday = new Date(now.getTime() + 2 * 60 * 60 * 1000); // +2h
-  await lecture2.set({
-    title: "Intelligence Artificielle",
-    subject: "DEV2_1",
-    room: "Room 402B",
-    teacherId,
-    studentIds: [studentId],
-    scheduledAt: admin.firestore.Timestamp.fromDate(laterToday),
-  });
+  for (const lecture of lectures) {
+    const ref = db.collection("lectures").doc();
+    await ref.set({
+      title: lecture.title,
+      subject: lecture.subject,
+      room: lecture.room,
+      teacherId: lecture.teacherId,
+      studentIds: [studentId],
+      scheduledAt: admin.firestore.Timestamp.fromDate(lecture.scheduledAt),
+    });
+  }
 
-  // 3. Lecture demain (UPCOMING)
-  const lecture3 = db.collection("lectures").doc();
-  const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000); // +24h
-  await lecture3.set({
-    title: "Architecture Réseaux",
-    subject: "DEV2_1",
-    room: "Cisco Lab",
-    teacherId,
-    studentIds: [studentId],
-    scheduledAt: admin.firestore.Timestamp.fromDate(tomorrow),
-  });
-
-  console.log("✅ Lectures initialized: 1 Open, 2 Upcoming");
+  console.log(`✅ Lectures initialized: ${lectures.length} sessions across the day`);
 }
 
 async function main() {
   console.log("\n🚀 EPISIGN — Seeding Firebase...\n");
 
-  const teacher = await createOrGetUser(TEACHER);
-  const student = await createOrGetUser(STUDENT);
+  const teachers = [];
+  for (const t of TEACHERS) {
+    const user = await createOrGetUser(t);
+    await setRole(user.uid, "teacher", t.displayName);
+    teachers.push(user);
+  }
 
-  await setRole(teacher.uid, "teacher", TEACHER.displayName);
+  const student = await createOrGetUser(STUDENT);
   await setRole(student.uid, "student", STUDENT.displayName);
 
-  await createLectures(teacher.uid, student.uid);
+  await createLectures(teachers.map(t => t.uid), student.uid);
 
   console.log("\n───────────────────────────────────────");
   console.log("📋 Test credentials:");
-  console.log(`   Teacher  → ${TEACHER.email} / ${TEACHER.password}`);
+  TEACHERS.forEach(t => {
+    console.log(`   Teacher  → ${t.email} / ${t.password}  (${t.displayName})`);
+  });
   console.log(`   Student  → ${STUDENT.email} / ${STUDENT.password}`);
   console.log("───────────────────────────────────────\n");
 

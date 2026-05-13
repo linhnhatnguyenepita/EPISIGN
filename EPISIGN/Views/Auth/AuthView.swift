@@ -13,6 +13,7 @@ struct AuthView: View {
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var isLoading: Bool = false
+    @State private var isPasswordVisible: Bool = false
 
     @FocusState private var isEmailFocused: Bool
     @FocusState private var isPasswordFocused: Bool
@@ -47,12 +48,32 @@ struct AuthView: View {
                 Divider()
                     .background(Color.black.opacity(0.2))
 
-                SecureField(text: $password){
-                    Text("Password")
+                HStack(spacing: 8) {
+                    Group {
+                        if isPasswordVisible {
+                            TextField(text: $password) { Text("Password") }
+                                .focused($isPasswordFocused)
+                        } else {
+                            SecureField(text: $password) { Text("Password") }
+                                .focused($isPasswordFocused)
+                        }
+                    }
+                    .font(AppFonts.dmSans(size: 14))
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled(true)
+
+                    Button {
+                        isPasswordVisible.toggle()
+                    } label: {
+                        Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
+                            .font(AppFonts.dmSans(size: 16))
+                            .foregroundStyle(AppColors.textSecondary)
+                            .frame(width: 24, height: 24)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(isPasswordVisible ? "Hide password" : "Show password")
                 }
-                .font(AppFonts.dmSans(size: 14))
                 .padding(16)
-                .focused($isPasswordFocused)
             }
             .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.black.opacity(0.2), lineWidth: 1))
             .background(
