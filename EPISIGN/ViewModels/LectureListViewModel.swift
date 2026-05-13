@@ -31,13 +31,13 @@ class LectureListViewModel: ObservableObject {
                 let room = data["room"] as? String ?? "Room TBD"
                 let group = data["subject"] as? String ?? ""
                 
-                // Fetch teacher name
-                var teacherName = "Unknown Teacher"
-                if let teacherId = data["teacherId"] as? String {
-                    if let tDoc = try? await db.collection("users").document(teacherId).getDocument(),
-                       let tName = tDoc.data()?["displayName"] as? String {
-                        teacherName = tName
-                    }
+                var teacherName = data["teacherName"] as? String ?? "Unknown Teacher"
+                if teacherName == "Unknown Teacher",
+                   let teacherId = data["teacherId"] as? String,
+                   teacherId == userId,
+                   let tDoc = try? await db.collection("users").document(teacherId).getDocument(),
+                   let tName = tDoc.data()?["displayName"] as? String {
+                    teacherName = tName
                 }
                 
                 // Handle times and status
